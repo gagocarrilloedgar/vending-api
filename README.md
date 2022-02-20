@@ -29,7 +29,7 @@ Set the environment variables:
 - **Docs**: with [APIDoc](https://apidocjs.com)
 - **TS**: [Typescrpit](https://www.typescriptlang.org)
 - **Containerization**: with [Docker](https://www.docker.com) to easily deploy to AWS
-- **Deployment**: with [AWS Elastic Beanstalk](https://aws.amazon.com/es/elasticbeanstalk) and [AWS CodePipeline](https://docs.aws.amazon.com/code/index.html) 
+- **Deployment**: with [AWS Elastic Beanstalk](https://aws.amazon.com/es/elasticbeanstalk) and [AWS CodePipeline](https://docs.aws.amazon.com/code/index.html)
 
 ## Commands
 
@@ -143,7 +143,3 @@ You can contact me using:
 or:
 
 > hello@nuwe.io
-
-## Licence
-
-[MIT](https://opensource.org/licenses/MIT)

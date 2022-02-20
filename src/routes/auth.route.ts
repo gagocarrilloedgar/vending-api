@@ -1,7 +1,8 @@
 import { User } from '@/models/user.model'
 import ApiError from '@/utils/ApiError'
-import express from 'express'
+import express, { Request, Response } from 'express'
 import httpStatus from 'http-status'
+import { catchAsync } from '@/utils/catchAsync'
 
 const router = express.Router()
 
@@ -27,20 +28,22 @@ const router = express.Router()
  * "password": ""
  * }
  */
-router.post('/login', async (req, res, next) => {
-  try {
+router.post(
+  '/login',
+  catchAsync(async (req: Request, res: Response) => {
     const { email, password } = req.body
+
     const user = await User.findOne({ email })
+
     if (!user || !user.validPassword(password))
       throw new ApiError(
         httpStatus.UNPROCESSABLE_ENTITY,
         'Invalid email or password'
       )
+
     res.json(user.toAuthJSON())
-  } catch (e) {
-    next(e)
-  }
-})
+  })
+)
 
 /**
  * @api {post} v1/auth/register Register
@@ -72,8 +75,9 @@ router.post('/login', async (req, res, next) => {
  * "Content-Type": "application/json"
  * }
  */
-router.post('/register', async (req, res, next) => {
-  try {
+router.post(
+  '/register',
+  catchAsync(async (req: Request, res: Response) => {
     const { username, email, password } = req.body
     const user = new User()
     user.username = username
@@ -81,11 +85,7 @@ router.post('/register', async (req, res, next) => {
     user.setPassword(password)
     await user.save()
     res.json(user.toAuthJSON())
-  } catch (e) {
-    if (e.name === 'MongoError')
-      return res.status(httpStatus.BAD_REQUEST).send(e)
-    next(e)
-  }
-})
+  })
+)
 
 export default router

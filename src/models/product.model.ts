@@ -1,4 +1,6 @@
+import { checkValidCoins } from '@/utils/checkValidCoins'
 import { Schema, Document, model } from 'mongoose'
+import { ValidAmounts } from './types'
 
 export interface IProduct {
   name: string
@@ -22,7 +24,11 @@ const schema = new Schema(
     },
     cost: {
       type: Number,
-      required: true
+      required: true,
+      validator: [
+        (value: number) => checkValidCoins(ValidAmounts, value),
+        'Invalid deposit amount'
+      ]
     },
     amountAvailable: {
       type: Number,

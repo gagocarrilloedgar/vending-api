@@ -8,7 +8,7 @@ export const checkValidCoins = (
   let i = ValidAmounts.length - 1
 
   while (sum) {
-    if (sum % ValidAmounts[i] >= 0 && sum >= ValidAmounts[i])
+    if (sum % ValidAmounts[i] === 0 && sum >= ValidAmounts[i])
       sum = sum - ValidAmounts[i] * Math.floor(sum / ValidAmounts[i])
 
     if (i === 0 && sum) return false

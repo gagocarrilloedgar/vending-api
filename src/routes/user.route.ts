@@ -1,10 +1,79 @@
 import authorize from '@/middlewares/authorize'
-import { User, UserRole, ValidAmounts } from '@models/user.model'
-import express from 'express'
+import { User, UserRole } from '@models/user.model'
+import express, { Request, Response } from 'express'
+
 import httpStatus from 'http-status'
 import { authenticate } from 'passport'
+import { catchAsync } from '@/utils/catchAsync'
 
 const router = express.Router()
+
+/**
+ * @api {get} v1/desposit
+ * @apiName updateDeposit
+ * @apiGroup User
+ * @apiPermission admin, seller
+ * @apiVersion  1.0.0
+ * @apiDescription Update user deposit
+ * @apiParam  {String} id User's id
+ * @apiParam  {String} amount User's deposit
+ * @apiSuccess (Success 200) {String} success message
+ * @apiSuccessExample {json} Success response:
+ * {
+ * "success": "User deposit updated successfully"
+ * }
+ */
+router.patch(
+  '/deposit',
+  authenticate(['jwt']),
+  authorize([UserRole.SELLER, UserRole.ADMIN]),
+  catchAsync(async (req: Request, res: Response) => {
+    const { id, amount } = req.body.id
+
+    if (!id || !amount)
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send('Invalid request, missing id or amount')
+
+    await User.findByIdAndUpdate(id, {
+      $inc: { deposit: amount }
+    })
+    res
+      .status(httpStatus.OK)
+      .json({ message: 'User deposit updated successfully' })
+  })
+)
+
+/**
+ * @api {get} v1/user/reset/:id
+ * @apiName resetUserDeposit
+ * @apiGroup User
+ * @apiPermission buyer
+ * @apiVersion  1.0.0
+ * @apiDescription Reset user deposit to 0
+ * @apiParam  {String} id User's id
+ * @apiSuccess (Success 200) {String} success message
+ * @apiSuccessExample {json} Success response:
+ * {
+ * "success": "User deposit reset successfully"
+ * }
+ */
+router.patch(
+  '/reset',
+  authenticate(['jwt']),
+  authorize([UserRole.BUYER]),
+  catchAsync(async (req: Request, res: Response) => {
+    await User.findByIdAndUpdate(req.params.id, {
+      $set: {
+        deposit: 0
+      }
+    })
+
+    res
+      .status(httpStatus.OK)
+      .json({ message: 'User deposit reset successfully' })
+  })
+)
 
 /**
  * @api {post} v1/user add user
@@ -80,17 +149,13 @@ router.post(
  *  }
  */
 router.get(
-  '/user',
+  '/:id',
   authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
-  async (req, res, next) => {
-    try {
-      const user = await User.findById(req.params.id)
-      res.json(user.toAuthJSON())
-    } catch (e) {
-      next(e)
-    }
-  }
+  catchAsync(async (req: Request, res: Response) => {
+    const user = await User.findById(req.params.id)
+    res.json(user.toAuthJSON())
+  })
 )
 
 /**
@@ -112,14 +177,10 @@ router.patch(
   '/:id',
   authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
-  async (req, res, next) => {
-    try {
-      await User.findByIdAndUpdate(req.params.id, req.body)
-      res.status(httpStatus.OK).json({ message: 'User updated successfully' })
-    } catch (e) {
-      next(e)
-    }
-  }
+  catchAsync(async (req: Request, res: Response) => {
+    await User.findByIdAndUpdate(req.params.id, req.body)
+    res.status(httpStatus.OK).json({ message: 'User updated successfully' })
+  })
 )
 
 /**
@@ -145,38 +206,10 @@ router.delete(
   '/:id',
   authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
-  async (req, res, next) => {
-    try {
-      await User.findByIdAndDelete(req.params.id)
-      res.status(httpStatus.OK).json({ message: 'User deleted' })
-    } catch (e) {
-      next(e)
-    }
-  }
+  catchAsync(async (req: Request, res: Response) => {
+    await User.findByIdAndDelete(req.params.id)
+    res.status(httpStatus.OK).json({ message: 'User deleted' })
+  })
 )
 
-/**
- *
- */
-router.patch(
-  '/deposit',
-  authenticate(['jwt']),
-  authorize([UserRole.SELLER, UserRole.ADMIN]),
-  async (req, res, next) => {
-    const { id, amount } = req.body.id
-
-    if (!id || !amount)
-      return res
-        .status(httpStatus.BAD_REQUEST)
-        .send('Invalid request, missing id or amount')
-
-    try {
-      const user = await User.findById(req.params)
-      user.deposit = req.body.deposit
-      await user.save()
-      res.status(httpStatus.OK).json({ message: 'User updated successfully' })
-    } catch (e) {
-      next(e)
-    }
-  }
-)
+export default router

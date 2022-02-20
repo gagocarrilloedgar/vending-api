@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken'
 import { JWT_EXPIRE, JWT_SECRET } from '@/config/config'
 import uniqueValidator from 'mongoose-unique-validator'
 import privateValidator from 'mongoose-private'
+import { checkValidCoins } from '@/utils/checkValidCoins'
+import { ValidAmounts } from './types'
 
 export interface IUser {
   username: string
@@ -24,8 +26,6 @@ export enum UserRole {
   BUYER = 'buyer',
   SELLER = 'seller'
 }
-
-export const ValidAmounts = [5, 10, 20, 50, 100]
 
 export default interface IUserModel extends Document, IUser {
   setPassword(password: string): void
@@ -62,7 +62,11 @@ const schema = new Schema<IUserModel>(
     },
     deposit: {
       type: Number,
-      default: 0
+      default: 0,
+      validator: [
+        (value: number) => checkValidCoins(ValidAmounts, value),
+        'Invalid deposit amount'
+      ]
     },
     role: {
       type: String,

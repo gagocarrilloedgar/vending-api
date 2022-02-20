@@ -1,10 +1,11 @@
 import authorize from '@/middlewares/authorize'
 import { UserRole } from '@models/user.model'
 import { Product } from '@models/product.model'
-import express from 'express'
+import express, { Request, Response } from 'express'
 import httpStatus from 'http-status'
 import { authenticate } from 'passport'
-import { checkSellerId } from '@/middlewares/checkSellerId'
+import paramsCheck from '@/middlewares/paramsCheck'
+import { catchAsync } from '@/utils/catchAsync'
 
 const router = express.Router()
 
@@ -22,18 +23,15 @@ const router = express.Router()
  * }
  * @apiSuccess (Success 200) {String} product Product's data
  */
-router.get('/:id', authenticate(['jwt']), async (req, res, next) => {
-  try {
-    const { id } = req.params
-    if (!id)
-      res.status(httpStatus.BAD_REQUEST).send({ message: 'id is required' })
-
+router.get(
+  '/:id',
+  authenticate(['jwt']),
+  catchAsync(async (req: Request, res: Response) => {
+    const id = req.params.id
     const product = await Product.findById(id)
     res.status(httpStatus.OK).send(product)
-  } catch (e) {
-    next(e)
-  }
-})
+  })
+)
 
 /**
  * @api {patch} v1/product/:id add product
@@ -57,14 +55,10 @@ router.post(
   '/',
   authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.SELLER]),
-  async (req, res, next) => {
-    try {
-      const product = await Product.create(req.body)
-      res.status(httpStatus.CREATED).send(product)
-    } catch (e) {
-      next(e)
-    }
-  }
+  catchAsync(async (req: Request, res: Response) => {
+    const product = await Product.create(req.body)
+    res.status(httpStatus.CREATED).send(product)
+  })
 )
 
 /**
@@ -85,18 +79,12 @@ router.delete(
   '/:id',
   authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.SELLER]),
-  checkSellerId,
-  async (req, res, next) => {
+  paramsCheck([{ key: 'id', type: 'query' }]),
+  catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
-    try {
-      await Product.findByIdAndDelete(id)
-      res
-        .status(httpStatus.OK)
-        .send({ message: 'Product successfully deleted' })
-    } catch (e) {
-      next(e)
-    }
-  }
+    await Product.findByIdAndDelete(id)
+    res.status(httpStatus.OK).send({ message: 'Product successfully deleted' })
+  })
 )
 
 /**
@@ -116,19 +104,20 @@ router.delete(
  * @apiError (Error 401) Unauthorized You are not authorized to update this product
  * @apiError (Error 404) NotFound Product not found
  */
+
 router.patch(
   '/:id',
   authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.SELLER]),
-  checkSellerId,
-  async (req, res, next) => {
+  paramsCheck([{ key: 'id', type: 'query' }]),
+  catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
     const body = req.body
-    try {
-      const product = await Product.findByIdAndUpdate(id, body)
-      res.status(httpStatus.OK).send(product)
-    } catch (e) {
-      next(e)
-    }
-  }
+
+    const product = await Product.findByIdAndUpdate(id, body)
+
+    res.status(httpStatus.OK).send(product)
+  })
 )
+
+export default router

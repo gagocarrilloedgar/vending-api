@@ -12,6 +12,7 @@
   },
   "plugins": ["@typescript-eslint"],
   "rules": {
+    "indent": "off",
     "curly": "off",
     "space-before-function-paren": "off"
   }

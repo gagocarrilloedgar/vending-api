@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express'
 
 const authorize =
   (roles: UserRole[]) => (req: Request, res: Response, next: NextFunction) => {
-    const role = req.body.role
+    const role = req.body.authRole
 
     if (role && roles.find((userRole) => role === userRole)) return next()
 

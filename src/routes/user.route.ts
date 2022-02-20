@@ -23,25 +23,40 @@ const router = express.Router()
  * "username": "jhon"
  * "role": "admin"
  * }
- * @apiSuccess (Success 200) {String} user User's Auth data
+ * @apiSuccess (Success 200) {String} success Success message
  * @apiSuccessExample {json} Success response:
+ * {
+ * "success": "User successfully created"
+ * }
+ * @apiError (Error 401) Unauthorized Invalid email or password
+ * @apiError (Error 500) InternalServerError Internal server error
+ * @apiHeaderExample {json} Header-Example:
+ * {
+ * "Content-Type": "application/json"
+ * }
  */
-router.post('/:id', authorize([UserRole.ADMIN]), async (req, res, next) => {
-  try {
-    const { email, password, username, role } = req.body
-    const user = new User()
-    user.email = email
-    user.username = username
-    user.role = role
-    user.setPassword(password)
-    await user.save()
-    res.json(user.toAuthJSON())
-  } catch (e) {
-    if (e.name === 'MongoError')
-      return res.status(httpStatus.BAD_REQUEST).send(e)
-    next(e)
+router.post(
+  '/:id',
+  authorize([UserRole.ADMIN, UserRole.SELLER]),
+  async (req, res, next) => {
+    try {
+      const { email, password, username, role = '', authRole } = req.body
+      const user = new User()
+      user.email = email
+      user.username = username
+      user.role = authRole === UserRole.SELLER ? UserRole.BUYER : role
+      user.setPassword(password)
+      await user.save()
+      res
+        .status(httpStatus.CREATED)
+        .json({ message: 'User successfully created' })
+    } catch (e) {
+      if (e.name === 'MongoError')
+        return res.status(httpStatus.BAD_REQUEST).send(e)
+      next(e)
+    }
   }
-})
+)
 
 /**
  * @api {get} v1/user/:id get user by id

@@ -34,4 +34,4 @@ const schema = new Schema(
   }
 )
 
-export const Store = model<IProductModel>('Product', schema)
+export const Product = model<IProductModel>('Product', schema)

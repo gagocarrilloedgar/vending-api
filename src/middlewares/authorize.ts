@@ -3,7 +3,7 @@ import { UserRole } from '@/models/user.model'
 import { NextFunction, Request, Response } from 'express'
 
 const authorize =
-  (roles: [UserRole]) => (req: Request, res: Response, next: NextFunction) => {
+  (roles: UserRole[]) => (req: Request, res: Response, next: NextFunction) => {
     const role = req.body.role
 
     if (role && roles.find((userRole) => role === userRole)) return next()

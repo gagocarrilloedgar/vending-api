@@ -1,0 +1,10 @@
+{
+  "name": "API",
+  "version": "1.0.0",
+  "description": "Vending machine API documentation",
+  "title": "Vending machin API",
+  "url": "https://someurl.com",
+  "header": {
+    "title": "API | vending machine"
+  }
+}

@@ -9,6 +9,7 @@ const router = express.Router()
  * @api {post} v1/auth/login Login
  * @apiName login
  * @apiGroup Auth
+ * @apiPermission public
  * @apiVersion  1.0.0
  * @apiDescription Login user and return JWT token
  * @apiParam  {String} email User's email
@@ -46,6 +47,7 @@ router.post('/login', async (req, res, next) => {
  * @apiName register
  * @apiGroup Auth
  * @apiVersion  1.0.0
+ * @apiPermission public
  * @apiDescription Register user and return JWT token
  * @apiParam  {String} email User's email
  * @apiParam  {String} password User's password

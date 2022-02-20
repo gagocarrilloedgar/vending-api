@@ -20,6 +20,12 @@ export interface IUserToAuthJSON {
   role: string
 }
 
+export enum UserRole {
+  ADMIN = 'admin',
+  BUYER = 'buyer',
+  SELLER = 'seller'
+}
+
 export default interface IUserModel extends Document, IUser {
   setPassword(password: string): void
   validPassword(password: string): boolean
@@ -59,7 +65,7 @@ const schema = new Schema<IUserModel>(
     },
     role: {
       type: String,
-      enum: ['seller', 'buyer', 'admin'],
+      enum: UserRole,
       default: 'buyer'
     }
   },

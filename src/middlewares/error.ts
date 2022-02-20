@@ -6,7 +6,24 @@ import httpStatus from 'http-status'
 import { IS_PRODUCTION, IS_TEST } from '@/config/config'
 import logger from '@/config/logger'
 
-export const errorConverter = (err: any, _req: any, _res: any, next: any) => {
+/**
+ * Error converter
+ * @param {Error} err
+ * @param {Request} req
+ * @param {Response} res
+ * @param {NextFunction} next
+ * @returns {Promise<void>}
+ * @private
+ * @function errorConverter
+ * @memberof middlewares
+ * @example
+ */
+export const errorConverter = (
+  err: any,
+  _req: any,
+  _res: any,
+  next: any
+): void => {
   let error = err
   if (!(error instanceof ApiError)) {
     const statusCode =

@@ -9,7 +9,7 @@
     "build": "tsc",
     "docs": "apidoc -i src/ -o public/",
     "nodemon": "nodemon --watch 'src/**/*.ts' --ignore 'src/**/*.spec.ts' -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv/config --exec 'ts-node --files' src/index.ts",
-    "test": "export APP_ENV=test; jest",
+    "test": "export APP_ENV=test; jest --passWithNoTests",
     "test:watch": "export APP_ENV=test; jest --watchAll",
     "coverage": "export APP_ENV=test; jest --coverage",
     "coverage:coveralls": "export APP_ENV=test; jest -i --coverage --coverageReporters=text-lcov | coveralls",
@@ -90,9 +90,9 @@
   },
   "lint-staged": {
     "*.ts": [
-      "npm lint",
-      "npm prettier:fix",
-      "npm test"
+      "npm run lint",
+      "npm run prettier:fix",
+      "npm run test"
     ]
   }
 }

@@ -141,6 +141,35 @@ define({ "api": [
         }
       ]
     },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Invalid email or password</p>"
+          }
+        ],
+        "Error 500": [
+          {
+            "group": "Error 500",
+            "optional": false,
+            "field": "InternalServerError",
+            "description": "<p>Internal server error</p>"
+          }
+        ]
+      }
+    },
+    "header": {
+      "examples": [
+        {
+          "title": "Header-Example:",
+          "content": "{\n\"Content-Type\": \"application/json\"\n}",
+          "type": "json"
+        }
+      ]
+    },
     "filename": "src/routes/auth.route.ts",
     "groupTitle": "Auth"
   }

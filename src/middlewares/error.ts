@@ -9,8 +9,8 @@ import logger from '@/config/logger'
 /**
  * Error converter
  * @param {Error} err
- * @param {Request} req
- * @param {Response} res
+ * @param {Request} _req
+ * @param {Response} _res
  * @param {NextFunction} next
  * @returns {Promise<void>}
  * @private

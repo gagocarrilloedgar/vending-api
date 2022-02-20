@@ -184,6 +184,199 @@
     "groupTitle": "Auth"
   },
   {
+    "type": "patch",
+    "url": "v1/product/:id",
+    "title": "delete product",
+    "name": "delete_product",
+    "group": "Product",
+    "permission": [
+      {
+        "name": "admin, seller"
+      }
+    ],
+    "version": "1.0.0",
+    "description": "<p>Delete product by id</p>",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "success",
+            "description": "<p>message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n\"success\": \"Product deleted successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "src/routes/product.route.ts",
+    "groupTitle": "Product"
+  },
+  {
+    "type": "post",
+    "url": "v1/product/:id",
+    "title": "get product",
+    "name": "getProductById",
+    "group": "Product",
+    "permission": [
+      {
+        "name": "seller, admin, buyer"
+      }
+    ],
+    "version": "1.0.0",
+    "description": "<p>Get product by id</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Product's id</p>"
+          }
+        ]
+      }
+    },
+    "examples": [
+      {
+        "title": "Request example:",
+        "content": "{\n\"id\": \"5e9f8f8f8f8f8f8f8f8f8f8\"\n}",
+        "type": "json"
+      }
+    ],
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "product",
+            "description": "<p>Product's data</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/routes/product.route.ts",
+    "groupTitle": "Product"
+  },
+  {
+    "type": "patch",
+    "url": "v1/product/:id",
+    "title": "add product",
+    "name": "update_addProduct",
+    "group": "Product",
+    "permission": [
+      {
+        "name": "admin, seller"
+      }
+    ],
+    "version": "1.0.0",
+    "description": "<p>Add new product</p>",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "success",
+            "description": "<p>message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n\"name\": \"\",\n\"sellerdId\": \"\",\n\"cost\": \"\",\n\"amountAvailable\": \"\",\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "src/routes/product.route.ts",
+    "groupTitle": "Product"
+  },
+  {
+    "type": "put",
+    "url": "v1/product/:id",
+    "title": "update product",
+    "name": "update_product",
+    "group": "Product",
+    "permission": [
+      {
+        "name": "admin, seller"
+      }
+    ],
+    "version": "1.0.0",
+    "description": "<p>Update product usint the product id and the seller id</p>",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "success",
+            "description": "<p>message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n\"success\": \"Product updated successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Error 400": [
+          {
+            "group": "Error 400",
+            "optional": false,
+            "field": "BadRequest",
+            "description": "<p>Invalid Id</p>"
+          }
+        ],
+        "Error 500": [
+          {
+            "group": "Error 500",
+            "optional": false,
+            "field": "InternalServerError",
+            "description": "<p>Internal server error</p>"
+          }
+        ],
+        "Error 401": [
+          {
+            "group": "Error 401",
+            "optional": false,
+            "field": "Unauthorized",
+            "description": "<p>You are not authorized to update this product</p>"
+          }
+        ],
+        "Error 404": [
+          {
+            "group": "Error 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Product not found</p>"
+          }
+        ]
+      }
+    },
+    "filename": "src/routes/product.route.ts",
+    "groupTitle": "Product"
+  },
+  {
     "type": "post",
     "url": "v1/user",
     "title": "add user",
@@ -280,6 +473,62 @@
       ]
     },
     "filename": "src/routes/user.route.ts",
+    "groupTitle": "User"
+  },
+  {
+    "type": "post",
+    "url": "v1/user/buy/:id",
+    "title": "buy a product",
+    "name": "buyProduct",
+    "group": "User",
+    "permission": [
+      {
+        "name": "buyer"
+      }
+    ],
+    "version": "1.0.0",
+    "description": "<p>Buy a product</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>Product's id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount",
+            "description": "<p>Amount to buy</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "product",
+            "description": "<p>object</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n\"total\": 5,\n\"product\": {\n     info:\n     {\n        \"id\": \"5e9f8f8f8f8f8f8f8f8f8f8\",\n        \"name\": \"\",\n        \"sellerId\": \"\",\n        \"cost\": \"\",\n        \"amountAvailable\": \"\",\n        \"createdAt\": \"2020-05-06T15:41:32.000Z\"\n     }\namount: 5,\nchange:0,\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "src/routes/buyer.route.ts",
     "groupTitle": "User"
   },
   {
@@ -464,6 +713,111 @@
           }
         ]
       }
+    },
+    "filename": "src/routes/user.route.ts",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
+    "url": "v1/user/reset/:id",
+    "title": "",
+    "name": "resetUserDeposit",
+    "group": "User",
+    "permission": [
+      {
+        "name": "buyer"
+      }
+    ],
+    "version": "1.0.0",
+    "description": "<p>Reset user deposit to 0</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>User's id</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "success",
+            "description": "<p>message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n\"success\": \"User deposit reset successfully\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "src/routes/user.route.ts",
+    "groupTitle": "User"
+  },
+  {
+    "type": "get",
+    "url": "v1/desposit",
+    "title": "",
+    "name": "updateDeposit",
+    "group": "User",
+    "permission": [
+      {
+        "name": "admin, seller"
+      }
+    ],
+    "version": "1.0.0",
+    "description": "<p>Update user deposit</p>",
+    "parameter": {
+      "fields": {
+        "Parameter": [
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "id",
+            "description": "<p>User's id</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "amount",
+            "description": "<p>User's deposit</p>"
+          }
+        ]
+      }
+    },
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "String",
+            "optional": false,
+            "field": "success",
+            "description": "<p>message</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success response:",
+          "content": "{\n\"success\": \"User deposit updated successfully\"\n}",
+          "type": "json"
+        }
+      ]
     },
     "filename": "src/routes/user.route.ts",
     "groupTitle": "User"

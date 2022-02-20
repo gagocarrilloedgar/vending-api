@@ -63,6 +63,12 @@ router.post('/login', async (req, res, next) => {
  * "email": ""
  * "role": ""
  * }
+ * @apiError (Error 400) BadRequest Invalid email or password
+ * @apiError (Error 500) InternalServerError Internal server error
+ * @apiHeaderExample {json} Header-Example:
+ * {
+ * "Content-Type": "application/json"
+ * }
  */
 router.post('/register', async (req, res, next) => {
   try {

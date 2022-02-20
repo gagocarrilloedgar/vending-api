@@ -1,5 +1,5 @@
 import authorize from '@/middlewares/authorize'
-import { User, UserRole } from '@models/user.model'
+import { User, UserRole, ValidAmounts } from '@models/user.model'
 import express from 'express'
 import httpStatus from 'http-status'
 import { authenticate } from 'passport'
@@ -149,6 +149,32 @@ router.delete(
     try {
       await User.findByIdAndDelete(req.params.id)
       res.status(httpStatus.OK).json({ message: 'User deleted' })
+    } catch (e) {
+      next(e)
+    }
+  }
+)
+
+/**
+ *
+ */
+router.patch(
+  '/deposit',
+  authenticate(['jwt']),
+  authorize([UserRole.SELLER, UserRole.ADMIN]),
+  async (req, res, next) => {
+    const { id, amount } = req.body.id
+
+    if (!id || !amount)
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send('Invalid request, missing id or amount')
+
+    try {
+      const user = await User.findById(req.params)
+      user.deposit = req.body.deposit
+      await user.save()
+      res.status(httpStatus.OK).json({ message: 'User updated successfully' })
     } catch (e) {
       next(e)
     }

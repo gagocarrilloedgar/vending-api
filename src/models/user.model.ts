@@ -13,7 +13,6 @@ export interface IUser {
   role: string
   salt: string
 }
-
 export interface IUserToAuthJSON {
   username: string
   email: string
@@ -25,6 +24,8 @@ export enum UserRole {
   BUYER = 'buyer',
   SELLER = 'seller'
 }
+
+export const ValidAmounts = [5, 10, 20, 50, 100]
 
 export default interface IUserModel extends Document, IUser {
   setPassword(password: string): void

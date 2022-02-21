@@ -1,6 +1,6 @@
-import { checkValidCoins } from '../src/utils/checkValidCoins'
+import { checkValidCoins } from 'src/utils/checkValidCoins'
 
-describe('Vending coins allowance check ', () => {
+describe('UTILS - Vending coins allowance check ', () => {
   test('50c should return true', () => {
     const ValidAmounts = [5, 10, 20, 50, 100]
     const amount = 50

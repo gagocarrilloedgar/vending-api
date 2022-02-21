@@ -1,26 +1,16 @@
 {
   "compilerOptions": {
-    "esModuleInterop": true,
-    "target": "es2018",
-    "noImplicitAny": true,
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "sourceMap": true,
-    "outDir": "build",
-    "baseUrl": ".",
-    "paths": {
-      "@/*": ["src/*"],
-      "@@/*": ["./*"],
-      "@models/*": ["src/models/*"],
-      "@utils/*": ["src/utils/*"],
-      "@middlewares/*": ["src/middlewares/*"],
-      "@controllers/*": ["src/controllers/*"],
-      "@config/*": ["src/config/*"]
-    },
     "module": "commonjs",
-    "skipLibCheck": true
-  },
-  "include": ["src/**/*", "tests"],
-  "exclude": ["build", "node_modules"]
+    "target": "es2021",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "removeComments": true,
+    "sourceMap": true,
+    "baseUrl": ".",
+    "outDir": "dist"
+  }
 }

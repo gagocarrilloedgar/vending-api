@@ -1,4 +1,4 @@
-import { checkValidCoins } from '@/utils/checkValidCoins'
+import { checkValidCoins } from 'src/utils/checkValidCoins'
 import { Schema, Document, model } from 'mongoose'
 import { ValidAmounts } from './types'
 

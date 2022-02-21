@@ -1,5 +1,5 @@
 import winston from 'winston'
-import { IS_PRODUCTION } from '@/config/config'
+import { IS_PRODUCTION } from 'src/config/config'
 
 const enumerateErrorFormat = winston.format((info) => {
   if (info instanceof Error) {

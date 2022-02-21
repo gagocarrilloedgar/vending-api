@@ -1,10 +1,10 @@
-import authorize from '@/middlewares/authorize'
-import { User, UserRole } from '@models/user.model'
+import authorize from 'src/middlewares/authorize'
+import { User, UserRole } from 'src/models/user.model'
 import express, { Request, Response } from 'express'
 
 import httpStatus from 'http-status'
 import { authenticate } from 'passport'
-import { catchAsync } from '@/utils/catchAsync'
+import { catchAsync } from 'src/utils/catchAsync'
 
 const router = express.Router()
 

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { UserRole } from '@/models/user.model'
+import { UserRole } from 'src/models/user.model'
 import { NextFunction, Request, Response } from 'express'
 
 const authorize =

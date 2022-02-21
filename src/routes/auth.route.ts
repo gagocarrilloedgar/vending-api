@@ -1,8 +1,8 @@
-import { User } from '@/models/user.model'
-import ApiError from '@/utils/ApiError'
+import { User } from 'src/models/user.model'
+import ApiError from 'src/utils/ApiError'
 import express, { Request, Response } from 'express'
 import httpStatus from 'http-status'
-import { catchAsync } from '@/utils/catchAsync'
+import { catchAsync } from 'src/utils/catchAsync'
 
 const router = express.Router()
 

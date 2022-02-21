@@ -1,13 +1,18 @@
-FROM node:14-alpine
+FROM node:lts-alpine
 
-WORKDIR /
+ADD package.json /app/package.json
 
-COPY package*.json ./
+WORKDIR /app
 
-RUN npm install --prod
+# Installing packages
+RUN npm i
 
-COPY . .
+ADD . /app
 
-EXPOSE 3000
+ENV NODE_ENV=production
+ENV NODE_PATH=dist/
 
-CMD [ "npm", "start"]
+# Building TypeScript files
+RUN npm run build
+
+CMD ["node", "dist/src/index.js"]

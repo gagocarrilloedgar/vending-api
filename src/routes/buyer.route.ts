@@ -1,12 +1,12 @@
-import authorize from '@/middlewares/authorize'
-import { User, UserRole } from '@models/user.model'
-import { ValidAmounts } from '@/models/types'
-import { Product } from '@models/product.model'
+import authorize from 'src/middlewares/authorize'
+import { User, UserRole } from 'src/models/user.model'
+import { ValidAmounts } from 'src/models/types'
+import { Product } from 'src/models/product.model'
 import express, { Request, Response } from 'express'
 import httpStatus from 'http-status'
 import { authenticate } from 'passport'
-import { mapToCoinTypes } from '@/utils/mapToCoinTypes'
-import { catchAsync } from '@/utils/catchAsync'
+import { mapToCoinTypes } from 'src/utils/mapToCoinTypes'
+import { catchAsync } from 'src/utils/catchAsync'
 
 const router = express.Router()
 
@@ -84,7 +84,7 @@ router.patch(
     await user.save()
     await product.save()
 
-    res.status(httpStatus.OK).send({
+    res.status(httpStatus.OK).json({
       total,
       product: {
         info: product,

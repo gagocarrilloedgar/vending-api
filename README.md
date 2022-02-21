@@ -70,6 +70,16 @@ npm test:e2e
 npm test:e2e:watch
 ```
 
+## With docker
+
+Using the Dockerfile 
+
+```sh
+  # Docker start | Start docker
+  docker build -t [image_name] .
+  docker run -it -p [PORT]:3000 [image_name]
+```
+
 ## Documenation
 
 run from root:

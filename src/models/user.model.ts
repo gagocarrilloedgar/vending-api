@@ -1,10 +1,9 @@
+/* eslint-disable no-unused-vars */
 import { Schema, Document, model } from 'mongoose'
 import crypto from 'crypto'
 import jwt from 'jsonwebtoken'
-import { JWT_EXPIRE, JWT_SECRET } from '@/config/config'
-import uniqueValidator from 'mongoose-unique-validator'
-import privateValidator from 'mongoose-private'
-import { checkValidCoins } from '@/utils/checkValidCoins'
+import { JWT_EXPIRE, JWT_SECRET } from 'src/config/config'
+import { checkValidCoins } from 'src/utils/checkValidCoins'
 import { ValidAmounts } from './types'
 
 export interface IUser {
@@ -78,10 +77,6 @@ const schema = new Schema<IUserModel>(
     timestamps: true
   }
 )
-
-// Plugins
-schema.plugin(uniqueValidator)
-schema.plugin(privateValidator)
 
 schema.virtual('name').get(function (this: IUserModel) {
   return this.username

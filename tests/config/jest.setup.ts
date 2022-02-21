@@ -1,5 +1,5 @@
 import request from 'supertest'
-import server from '@/app'
+import server from 'src/app'
 
 const agent = request.agent(server)
 

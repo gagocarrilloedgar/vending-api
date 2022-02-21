@@ -1,6 +1,6 @@
 import morgan from 'morgan'
-import { IS_PRODUCTION } from '@/config/config'
-import logger from '@/config/logger'
+import { IS_PRODUCTION } from 'src/config/config'
+import logger from 'src/config/logger'
 
 const getIpFormat = () => (IS_PRODUCTION ? ':remote-addr - ' : '')
 const successResponseFormat = `${getIpFormat()}:method :url :status - :response-time ms`

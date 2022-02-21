@@ -1,19 +1,19 @@
 import mongoose from 'mongoose'
 import { MongoMemoryServer } from 'mongodb-memory-server'
 
-const mongoServer = new MongoMemoryServer()
+let mongoServer: MongoMemoryServer
 
 export const connect = async () => {
-  const mongoUri = mongoServer.getUri()
+  mongoServer = await MongoMemoryServer.create()
+  const uri = mongoServer.getUri()
 
-  const mongooseOpts = {
+  const options = {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    useCreateIndex: true,
-    useFindAndModify: false
+    autoIndex: true
   }
 
-  await mongoose.connect(mongoUri, mongooseOpts)
+  await mongoose.connect(uri, options)
 }
 
 export const clear = async () => {
@@ -26,13 +26,3 @@ export const close = async () => {
   await mongoose.connection.close()
   await mongoServer.stop()
 }
-
-export default {
-  connect,
-  clear,
-  close
-}
-
-beforeAll(async () => connect())
-beforeEach(async () => clear())
-afterAll(async () => close())

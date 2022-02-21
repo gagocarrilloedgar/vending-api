@@ -4,13 +4,13 @@ import mongoSanitize from 'express-mongo-sanitize'
 import compression from 'compression'
 import cors from 'cors'
 import routes from './routes'
-import { morganSuccessHandler, morganErrorHandler } from '@/config/morgan'
-import { IS_TEST, APP_PREFIX_PATH } from '@/config/config'
+import { morganSuccessHandler, morganErrorHandler } from 'src/config/morgan'
+import { IS_TEST, APP_PREFIX_PATH } from 'src/config/config'
 import httpStatus from 'http-status'
 import ApiError from './utils/ApiError'
 import { errorConverter, errorHandler } from './middlewares/error'
 import passport from 'passport'
-import { anonymousStrategy, jwtStrategy } from '@/config/passport'
+import { anonymousStrategy, jwtStrategy } from 'src/config/passport'
 
 const app = express()
 

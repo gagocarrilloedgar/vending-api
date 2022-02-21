@@ -1,5 +1,5 @@
-import { JWT_SECRET } from '@config/config'
-import { User } from '@models/user.model'
+import { JWT_SECRET } from 'src/config/config'
+import { User } from 'src/models/user.model'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
 import { Strategy as AnonymousStrategy } from 'passport-anonymous'
 

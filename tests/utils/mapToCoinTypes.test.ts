@@ -1,6 +1,6 @@
-import { mapToCoinTypes } from '../src/utils/mapToCoinTypes'
+import { mapToCoinTypes } from 'src/utils/mapToCoinTypes'
 
-describe('Vending coins allowance check ', () => {
+describe('UTILS - Vending coins allowance check ', () => {
   const ValidAmounts = [5, 10, 20, 50, 100]
 
   test('50c should return an object change', () => {

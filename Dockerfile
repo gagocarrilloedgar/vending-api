@@ -15,4 +15,6 @@ ENV NODE_PATH=dist/
 # Building TypeScript files
 RUN npm run build
 
+EXPOSE 3000
+
 CMD ["node", "dist/src/index.js"]

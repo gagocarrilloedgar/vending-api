@@ -1,10 +1,9 @@
+import express, { Request, Response } from 'express'
+import httpStatus from 'http-status'
+
 import authorize from 'src/middlewares/authorize'
 import { UserRole } from 'src/models/user.model'
 import { Product } from 'src/models/product.model'
-import express, { Request, Response } from 'express'
-import httpStatus from 'http-status'
-import { authenticate } from 'passport'
-import paramsCheck from 'src/middlewares/paramsCheck'
 import { catchAsync } from 'src/utils/catchAsync'
 
 const router = express.Router()
@@ -25,7 +24,6 @@ const router = express.Router()
  */
 router.get(
   '/:id',
-  authenticate(['jwt']),
   catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
     const product = await Product.findById(id)
@@ -53,7 +51,6 @@ router.get(
  */
 router.post(
   '/',
-  authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.SELLER]),
   catchAsync(async (req: Request, res: Response) => {
     const product = await Product.create(req.body)
@@ -77,9 +74,7 @@ router.post(
  */
 router.delete(
   '/:id',
-  authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.SELLER]),
-  paramsCheck([{ key: 'id', type: 'query' }]),
   catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
     await Product.findByIdAndDelete(id)
@@ -107,9 +102,7 @@ router.delete(
 
 router.patch(
   '/:id',
-  authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.SELLER]),
-  paramsCheck([{ key: 'id', type: 'query' }]),
   catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
     const body = req.body

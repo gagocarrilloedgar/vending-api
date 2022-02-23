@@ -36,13 +36,13 @@ Set the environment variables:
 Running locally:
 
 ```bash
-npm dev
+npm run dev
 ```
 
 building:
 
 ```bash
-npm build
+npm run build
 ```
 
 Running production (build before use):
@@ -60,14 +60,6 @@ npm test
 # run all unit tests in watch mode
 npm test:watch
 
-# run unit tests coverage
-npm test:coverage
-
-# run all e2e tests
-npm test:e2e
-
-# run all e2e tests in watch mode
-npm test:e2e:watch
 ```
 
 ## With docker

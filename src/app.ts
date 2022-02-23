@@ -10,16 +10,21 @@ import httpStatus from 'http-status'
 import ApiError from './utils/ApiError'
 import { errorConverter, errorHandler } from './middlewares/error'
 import passport from 'passport'
-import { anonymousStrategy, jwtStrategy } from 'src/config/passport'
+import session from 'express-session'
 
 const app = express()
 
 // Documentation api
 app.use(express.static('public'))
 
-app.use(passport.initialize())
-passport.use(jwtStrategy)
-passport.use(anonymousStrategy)
+app.set('trust proxy', 1) // trust first proxy
+app.use(
+  session({
+    secret: 'secretsession',
+    resave: false,
+    saveUninitialized: true
+  })
+)
 
 if (!IS_TEST) {
   app.use(morganSuccessHandler)
@@ -42,6 +47,9 @@ app.use(mongoSanitize())
 app.use(compression())
 
 app.use(cors())
+
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(APP_PREFIX_PATH, routes)
 

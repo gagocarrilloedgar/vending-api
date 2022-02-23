@@ -6,6 +6,11 @@ import { catchAsync } from 'src/utils/catchAsync'
 
 const router = express.Router()
 
+router.get('/', async (req: Request, res: Response) => {
+  console.log('fasdf')
+  res.json({ hello: 'world' })
+})
+
 /**
  * @api {post} v1/auth/login Login
  * @apiName login
@@ -28,6 +33,7 @@ const router = express.Router()
  * "password": ""
  * }
  */
+
 router.post(
   '/login',
   catchAsync(async (req: Request, res: Response) => {
@@ -41,7 +47,7 @@ router.post(
         'Invalid email or password'
       )
 
-    res.json(user.toAuthJSON())
+    res.status(httpStatus.OK).json({ data: user.toAuthJSON() })
   })
 )
 

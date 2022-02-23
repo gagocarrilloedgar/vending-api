@@ -1,12 +1,11 @@
+import { Router, Request, Response } from 'express'
+import httpStatus from 'http-status'
+
+import { catchAsync } from 'src/utils/catchAsync'
 import authorize from 'src/middlewares/authorize'
 import { User, UserRole } from 'src/models/user.model'
-import express, { Request, Response } from 'express'
 
-import httpStatus from 'http-status'
-import { authenticate } from 'passport'
-import { catchAsync } from 'src/utils/catchAsync'
-
-const router = express.Router()
+const router = Router()
 
 /**
  * @api {get} v1/desposit
@@ -25,7 +24,6 @@ const router = express.Router()
  */
 router.patch(
   '/deposit',
-  authenticate(['jwt']),
   authorize([UserRole.SELLER, UserRole.ADMIN]),
   catchAsync(async (req: Request, res: Response) => {
     const { id, amount } = req.body.id
@@ -58,9 +56,9 @@ router.patch(
  * "success": "User deposit reset successfully"
  * }
  */
+
 router.patch(
   '/reset',
-  authenticate(['jwt']),
   authorize([UserRole.BUYER]),
   catchAsync(async (req: Request, res: Response) => {
     await User.findByIdAndUpdate(req.params.id, {
@@ -107,24 +105,18 @@ router.patch(
 router.post(
   '/:id',
   authorize([UserRole.ADMIN, UserRole.SELLER]),
-  async (req, res, next) => {
-    try {
-      const { email, password, username, role = '', authRole } = req.body
-      const user = new User()
-      user.email = email
-      user.username = username
-      user.role = authRole === UserRole.SELLER ? UserRole.BUYER : role
-      user.setPassword(password)
-      await user.save()
-      res
-        .status(httpStatus.CREATED)
-        .json({ message: 'User successfully created' })
-    } catch (e) {
-      if (e.name === 'MongoError')
-        return res.status(httpStatus.BAD_REQUEST).send(e)
-      next(e)
-    }
-  }
+  catchAsync(async (req: Request, res: Response) => {
+    const { email, password, username, role = '', authRole } = req.body
+    const user = new User()
+    user.email = email
+    user.username = username
+    user.role = authRole === UserRole.SELLER ? UserRole.BUYER : role
+    user.setPassword(password)
+    await user.save()
+    res
+      .status(httpStatus.CREATED)
+      .json({ message: 'User successfully created' })
+  })
 )
 
 /**
@@ -150,7 +142,6 @@ router.post(
  */
 router.get(
   '/:id',
-  authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
   catchAsync(async (req: Request, res: Response) => {
     const user = await User.findById(req.params.id)
@@ -175,7 +166,6 @@ router.get(
  */
 router.patch(
   '/:id',
-  authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
   catchAsync(async (req: Request, res: Response) => {
     await User.findByIdAndUpdate(req.params.id, req.body)
@@ -204,7 +194,6 @@ router.patch(
  */
 router.delete(
   '/:id',
-  authenticate(['jwt']),
   authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
   catchAsync(async (req: Request, res: Response) => {
     await User.findByIdAndDelete(req.params.id)

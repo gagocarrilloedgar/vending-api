@@ -1,10 +1,10 @@
+import express, { Request, Response } from 'express'
+import httpStatus from 'http-status'
+
 import authorize from 'src/middlewares/authorize'
 import { User, UserRole } from 'src/models/user.model'
 import { ValidAmounts } from 'src/models/types'
 import { Product } from 'src/models/product.model'
-import express, { Request, Response } from 'express'
-import httpStatus from 'http-status'
-import { authenticate } from 'passport'
 import { mapToCoinTypes } from 'src/utils/mapToCoinTypes'
 import { catchAsync } from 'src/utils/catchAsync'
 
@@ -41,7 +41,6 @@ const router = express.Router()
  */
 router.patch(
   '/buy/:id',
-  authenticate(['jwt']),
   authorize([UserRole.BUYER]),
   catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id

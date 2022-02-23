@@ -1,7 +1,6 @@
 import { JWT_SECRET } from 'src/config/config'
 import { User } from 'src/models/user.model'
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt'
-import { Strategy as AnonymousStrategy } from 'passport-anonymous'
 
 interface JWTPayload {
   id: string
@@ -10,11 +9,15 @@ interface JWTPayload {
   iat: number
   exp: number
 }
+
+const options = {
+  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  secretOrKey: JWT_SECRET,
+  passReqToCallback: false
+}
+
 export const jwtStrategy = new JwtStrategy(
-  {
-    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-    secretOrKey: JWT_SECRET
-  },
+  options,
   async (payload: JWTPayload, done) => {
     try {
       const user = await User.findById(payload.id)
@@ -25,5 +28,3 @@ export const jwtStrategy = new JwtStrategy(
     }
   }
 )
-
-export const anonymousStrategy = new AnonymousStrategy()

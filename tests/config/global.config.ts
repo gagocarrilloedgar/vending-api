@@ -5,10 +5,9 @@ beforeAll = async () => {
 }
 
 beforeEach = async () => {
-  await close()
+  await clear()
 }
 
 afterAll = async () => {
-  await clear()
   await close()
 }

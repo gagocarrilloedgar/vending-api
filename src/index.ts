@@ -25,7 +25,7 @@ mongoose
     logger.error(e)
   })
 
-// When successfully connected
+// When successfully connecteds
 mongoose.connection.on('connected', () => {
   logger.debug('Mongoose default connection open to ' + DB_URI)
 })

@@ -88,6 +88,7 @@ router.post(
     const user = new User()
     user.username = username
     user.email = email
+    user.deposit = 0
     user.setPassword(password)
     await user.save()
     res.json(user.toAuthJSON())

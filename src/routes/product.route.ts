@@ -5,6 +5,7 @@ import authorize from 'src/middlewares/authorize'
 import { UserRole } from 'src/models/user.model'
 import { Product } from 'src/models/product.model'
 import { catchAsync } from 'src/utils/catchAsync'
+import passport from 'passport'
 
 const router = express.Router()
 
@@ -51,7 +52,8 @@ router.get(
  */
 router.post(
   '/',
-  authorize([UserRole.ADMIN, UserRole.SELLER]),
+  passport.authenticate('jwt'),
+  authorize([UserRole.SELLER, UserRole.ADMIN]),
   catchAsync(async (req: Request, res: Response) => {
     const product = await Product.create(req.body)
     res.status(httpStatus.CREATED).send(product)
@@ -74,7 +76,8 @@ router.post(
  */
 router.delete(
   '/:id',
-  authorize([UserRole.ADMIN, UserRole.SELLER]),
+  passport.authenticate('jwt'),
+  authorize([UserRole.SELLER, UserRole.ADMIN]),
   catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
     await Product.findByIdAndDelete(id)
@@ -102,7 +105,8 @@ router.delete(
 
 router.patch(
   '/:id',
-  authorize([UserRole.ADMIN, UserRole.SELLER]),
+  passport.authenticate('jwt'),
+  authorize([UserRole.SELLER, UserRole.ADMIN]),
   catchAsync(async (req: Request, res: Response) => {
     const id = req.params.id
     const body = req.body

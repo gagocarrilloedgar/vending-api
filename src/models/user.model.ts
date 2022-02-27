@@ -82,6 +82,10 @@ schema.virtual('name').get(function (this: IUserModel) {
   return this.username
 })
 
+schema.path('deposit').validate(function (this: IUserModel, value: number) {
+  return value === 0 ? true : checkValidCoins(ValidAmounts, value)
+}, 'Invalid deposit amount')
+
 schema.methods.setPassword = function (newPassword: string) {
   this.salt = crypto.randomBytes(16).toString('hex')
   this.password = crypto
@@ -111,8 +115,9 @@ schema.methods.generateJWT = function (): string {
 }
 
 schema.methods.toAuthJSON = function () {
-  const { username, email, role } = this
+  const { _id, username, email, role } = this
   return {
+    id: _id,
     username,
     email,
     role,

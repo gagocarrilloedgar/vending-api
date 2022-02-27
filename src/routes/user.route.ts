@@ -4,6 +4,9 @@ import httpStatus from 'http-status'
 import { catchAsync } from 'src/utils/catchAsync'
 import authorize from 'src/middlewares/authorize'
 import { User, UserRole } from 'src/models/user.model'
+import passport from 'passport'
+import { checkValidCoins } from 'src/utils/checkValidCoins'
+import { ValidAmounts } from 'src/models/types'
 
 const router = Router()
 
@@ -24,18 +27,24 @@ const router = Router()
  */
 router.patch(
   '/deposit',
-  authorize([UserRole.SELLER, UserRole.ADMIN]),
-  catchAsync(async (req: Request, res: Response) => {
-    const { id, amount } = req.body.id
+  passport.authenticate('jwt'),
+  authorize([UserRole.SELLER, UserRole.ADMIN, UserRole.BUYER]),
+  catchAsync(async (req: any, res: Response) => {
+    const { amount } = req.body
+    const id = req.user.id
+    const deposit = amount + req.user.deposit
 
-    if (!id || !amount)
+    if (!amount)
       return res
         .status(httpStatus.BAD_REQUEST)
-        .send('Invalid request, missing id or amount')
+        .send('Invalid request, missing amount')
 
-    await User.findByIdAndUpdate(id, {
-      $inc: { deposit: amount }
-    })
+    await User.findOneAndUpdate(
+      { _id: id },
+      { $set: { deposit } },
+      { runValidators: true }
+    )
+
     res
       .status(httpStatus.OK)
       .json({ message: 'User deposit updated successfully' })
@@ -59,13 +68,10 @@ router.patch(
 
 router.patch(
   '/reset',
-  authorize([UserRole.BUYER]),
-  catchAsync(async (req: Request, res: Response) => {
-    await User.findByIdAndUpdate(req.params.id, {
-      $set: {
-        deposit: 0
-      }
-    })
+  passport.authenticate('jwt'),
+  authorize([UserRole.SELLER, UserRole.ADMIN, UserRole.BUYER]),
+  catchAsync(async (req: any, res: Response) => {
+    await User.updateOne({ _id: req.user.id }, { $set: { deposit: 0 } })
 
     res
       .status(httpStatus.OK)
@@ -103,19 +109,19 @@ router.patch(
  * }
  */
 router.post(
-  '/:id',
-  authorize([UserRole.ADMIN, UserRole.SELLER]),
+  '/',
   catchAsync(async (req: Request, res: Response) => {
-    const { email, password, username, role = '', authRole } = req.body
+    const { email, password, username, role } = req.body
     const user = new User()
     user.email = email
     user.username = username
-    user.role = authRole === UserRole.SELLER ? UserRole.BUYER : role
+    user.role = role
     user.setPassword(password)
     await user.save()
-    res
-      .status(httpStatus.CREATED)
-      .json({ message: 'User successfully created' })
+    res.status(httpStatus.CREATED).json({
+      message: 'User successfully created',
+      userId: user._id
+    })
   })
 )
 
@@ -142,7 +148,8 @@ router.post(
  */
 router.get(
   '/:id',
-  authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
+  passport.authenticate('jwt'),
+  authorize([UserRole.SELLER, UserRole.ADMIN, UserRole.BUYER]),
   catchAsync(async (req: Request, res: Response) => {
     const user = await User.findById(req.params.id)
     res.json(user.toAuthJSON())
@@ -150,7 +157,7 @@ router.get(
 )
 
 /**
- * @api {get} v1/user/:id get user by id
+ * @api {get} v1/user/:id update user by id
  * @apiName get user by id
  * @apiGroup User
  * @apiPermission admin, seller, buyer
@@ -166,9 +173,18 @@ router.get(
  */
 router.patch(
   '/:id',
-  authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
-  catchAsync(async (req: Request, res: Response) => {
-    await User.findByIdAndUpdate(req.params.id, req.body)
+  passport.authenticate('jwt'),
+  authorize([UserRole.SELLER, UserRole.ADMIN, UserRole.BUYER]),
+  catchAsync(async (req: any, res: Response) => {
+    const deposit = checkValidCoins(
+      ValidAmounts,
+      req.body.deposit + req.user.deposit
+    )
+
+    if (!deposit)
+      return res.status(httpStatus.BAD_REQUEST).send('Invalid deposit amount')
+
+    await User.findByIdAndUpdate(req.params.id, { deposit })
     res.status(httpStatus.OK).json({ message: 'User updated successfully' })
   })
 )
@@ -194,7 +210,8 @@ router.patch(
  */
 router.delete(
   '/:id',
-  authorize([UserRole.ADMIN, UserRole.BUYER, UserRole.SELLER]),
+  passport.authenticate('jwt'),
+  authorize([UserRole.SELLER, UserRole.ADMIN, UserRole.BUYER]),
   catchAsync(async (req: Request, res: Response) => {
     await User.findByIdAndDelete(req.params.id)
     res.status(httpStatus.OK).json({ message: 'User deleted' })

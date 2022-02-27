@@ -10,6 +10,6 @@ const router = express.Router()
 router.use('/user', user)
 router.use('/product', product)
 router.use('/buyer', buyer)
-router.use('/product', auth)
+router.use('/auth', auth)
 
 export default router

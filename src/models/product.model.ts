@@ -16,7 +16,8 @@ const schema = new Schema(
     name: {
       type: String,
       required: true,
-      minlength: 3
+      minlength: 3,
+      unique: true
     },
     sellerId: {
       type: String,
@@ -25,10 +26,10 @@ const schema = new Schema(
     cost: {
       type: Number,
       required: true,
-      validator: [
-        (value: number) => checkValidCoins(ValidAmounts, value),
-        'Invalid deposit amount'
-      ]
+      validate: {
+        validator: (value: number) => checkValidCoins(ValidAmounts, value),
+        message: 'Invalid deposit amount'
+      }
     },
     amountAvailable: {
       type: Number,

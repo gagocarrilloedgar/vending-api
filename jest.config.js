@@ -6,8 +6,7 @@ module.exports = {
   collectCoverage: true,
   testEnvironment: 'node',
   testEnvironmentOptions: {
-    NODE_ENV: 'test',
-    APP_ENV: 'test'
+    NODE_ENV: 'test'
   },
   restoreMocks: true,
   coveragePathIgnorePatterns: [

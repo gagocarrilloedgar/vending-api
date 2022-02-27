@@ -1,6 +1,6 @@
 import request from 'supertest'
 import server from 'src/app'
 
-const agent = request.agent(server)
+const app = request.agent(server)
 
-export default agent
+export default app

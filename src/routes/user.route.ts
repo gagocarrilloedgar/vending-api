@@ -5,8 +5,6 @@ import { catchAsync } from 'src/utils/catchAsync'
 import authorize from 'src/middlewares/authorize'
 import { User, UserRole } from 'src/models/user.model'
 import passport from 'passport'
-import { checkValidCoins } from 'src/utils/checkValidCoins'
-import { ValidAmounts } from 'src/models/types'
 
 const router = Router()
 
@@ -30,14 +28,16 @@ router.patch(
   passport.authenticate('jwt'),
   authorize([UserRole.SELLER, UserRole.ADMIN, UserRole.BUYER]),
   catchAsync(async (req: any, res: Response) => {
-    const { amount } = req.body
     const id = req.user.id
-    const deposit = amount + req.user.deposit
 
-    if (!amount)
+    if (req.body.amount === undefined)
       return res
         .status(httpStatus.BAD_REQUEST)
-        .send('Invalid request, missing amount')
+        .send({ message: 'Invalid request, missing amount' })
+
+    const { amount } = req.body
+
+    const deposit = amount + req.user.deposit
 
     await User.findOneAndUpdate(
       { _id: id },
@@ -119,8 +119,7 @@ router.post(
     user.setPassword(password)
     await user.save()
     res.status(httpStatus.CREATED).json({
-      message: 'User successfully created',
-      userId: user._id
+      message: 'User successfully created'
     })
   })
 )
@@ -176,15 +175,7 @@ router.patch(
   passport.authenticate('jwt'),
   authorize([UserRole.SELLER, UserRole.ADMIN, UserRole.BUYER]),
   catchAsync(async (req: any, res: Response) => {
-    const deposit = checkValidCoins(
-      ValidAmounts,
-      req.body.deposit + req.user.deposit
-    )
-
-    if (!deposit)
-      return res.status(httpStatus.BAD_REQUEST).send('Invalid deposit amount')
-
-    await User.findByIdAndUpdate(req.params.id, { deposit })
+    await User.findByIdAndUpdate(req.params.id, req.body)
     res.status(httpStatus.OK).json({ message: 'User updated successfully' })
   })
 )

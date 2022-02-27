@@ -8,7 +8,7 @@
     "nodemon": "NODE_ENV=development nodemon --watch 'src/**/*.ts' -r ts-node/register/transpile-only -r tsconfig-paths/register -r dotenv/config --exec 'ts-node --files' src/index.ts",
     "build": "tsc",
     "start": "NODE_PATH=dist/ NODE_ENV=production node dist/src/index.js",
-    "test": "export NODE_ENV=test NODE_PATH=./; jest --passWithNoTests --coverage",
+    "test": "export NODE_ENV=test NODE_PATH=./; jest --passWithNoTests --coverage --runInBand --detectOpenHandles --forceExit ",
     "test:watch": "export NODE_ENV=test; jest --watchAll",
     "coverage": "export NODE_ENV=test; jest --coverage",
     "lint": "eslint src/**/*.ts",

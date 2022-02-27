@@ -54,8 +54,10 @@ router.post(
   '/',
   passport.authenticate('jwt'),
   authorize([UserRole.SELLER, UserRole.ADMIN]),
-  catchAsync(async (req: Request, res: Response) => {
-    const product = await Product.create(req.body)
+  catchAsync(async (req: any, res: Response) => {
+    const sellerId = req.user.id
+    const body = { ...req.body, sellerId }
+    const product = await Product.create(body)
     res.status(httpStatus.CREATED).send(product)
   })
 )

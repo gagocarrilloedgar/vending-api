@@ -2,7 +2,7 @@ import express, { Response } from 'express'
 import httpStatus from 'http-status'
 
 import authorize from 'src/middlewares/authorize'
-import { User, UserRole } from 'src/models/user.model'
+import { UserRole } from 'src/models/user.model'
 import { ValidAmounts } from 'src/models/types'
 import { Product } from 'src/models/product.model'
 import { mapToCoinTypes } from 'src/utils/mapToCoinTypes'
@@ -47,38 +47,25 @@ router.patch(
   catchAsync(async (req: any, res: Response) => {
     const id = req.params.id
     const { amount } = req.body
-    const buyerId = req.user.id
+    const user = req.user
 
     const product = await Product.findById(id)
-
-    if (!product)
-      return res
-        .status(httpStatus.NOT_FOUND)
-        .send({ message: 'Product not found' })
 
     const total = product.cost * amount
 
     if (product.amountAvailable < amount)
-      return res.status(httpStatus.OK).send({ message: 'Not enough amount' })
-
-    const user = await User.findById(buyerId)
-
-    if (!user)
       return res
-        .status(httpStatus.NOT_FOUND)
-        .send({ message: 'User not found' })
+        .status(httpStatus.BAD_REQUEST)
+        .send({ message: 'Not enough amount' })
 
     if (user.deposit < total)
-      return res.status(httpStatus.OK).send({ message: 'Not enough money' })
+      return res
+        .status(httpStatus.BAD_REQUEST)
+        .send({ message: 'Not enough money' })
 
     const change = user.deposit - total
 
     const changeInCoins = mapToCoinTypes(ValidAmounts, change)
-
-    if (change !== 0 && !changeInCoins)
-      return res
-        .status(httpStatus.OK)
-        .send({ message: 'The money provided did not have the rigth coins' })
 
     user.deposit -= total
     product.amountAvailable -= amount
@@ -92,7 +79,7 @@ router.patch(
         info: product,
         amount: amount
       },
-      change: change === 0 ? change : changeInCoins
+      change: changeInCoins
     })
   })
 )

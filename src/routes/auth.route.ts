@@ -6,11 +6,6 @@ import { catchAsync } from 'src/utils/catchAsync'
 
 const router = express.Router()
 
-router.get('/', async (req: Request, res: Response) => {
-  console.log('fasdf')
-  res.json({ hello: 'world' })
-})
-
 /**
  * @api {post} v1/auth/login Login
  * @apiName login
@@ -91,7 +86,7 @@ router.post(
     user.deposit = 0
     user.setPassword(password)
     await user.save()
-    res.json(user.toAuthJSON())
+    res.status(httpStatus.CREATED).json({ data: user.toAuthJSON() })
   })
 )
 

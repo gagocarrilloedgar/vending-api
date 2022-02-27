@@ -55,5 +55,5 @@ export const errorHandler = (err: any, _req: any, res: any) => {
     logger.error(err)
   }
 
-  res.status(statusCode).send(response)
+  res.status(statusCode).send({ error: response })
 }
